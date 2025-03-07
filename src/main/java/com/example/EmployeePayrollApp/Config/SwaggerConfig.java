@@ -12,7 +12,7 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("EmployeePayRollAPI")
+                        .title("Employee Payroll API")
                         .version("1.0")
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")));
     }
