@@ -59,12 +59,14 @@ package com.example.EmployeePayrollApp.Controllers;//package com.example.Employe
 import com.example.EmployeePayrollApp.DTOs.EmployeeDTO;
 import com.example.EmployeePayrollApp.Services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/employeepayrollservice")
+@Slf4j
 public class EmployeeController {
 
     @Autowired
