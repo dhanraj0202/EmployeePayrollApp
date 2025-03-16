@@ -3,6 +3,7 @@ package com.example.EmployeePayroll.Service;
 import com.example.EmployeePayroll.Interface.IemployeeService;
 import com.example.EmployeePayroll.Repository.employeeRepo;
 import com.example.EmployeePayroll.model.EmployeeModel;
+import com.example.EmployeePayroll.Exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,42 +20,67 @@ public class EmployeeService implements IemployeeService {
 
     @Override
     public List<EmployeeModel> getAllUsers() {
-        log.info("Fetching all employees from the database.");
-        return employeeRepository.findAll();
+        try {
+            log.info("Fetching all employees from the database.");
+            return employeeRepository.findAll();
+        } catch (Exception e) {
+            log.error("Error fetching employee data", e);
+            throw new UserException("Failed to fetch employees. Please try again later.");
+        }
     }
 
     @Override
     public Optional<EmployeeModel> getUserById(Long id) {
-        log.info("Fetching employee with ID: {}", id);
-        return employeeRepository.findById(id);
+        try {
+            log.info("Fetching employee with ID: {}", id);
+            return employeeRepository.findById(id);
+        } catch (Exception e) {
+            log.error("Error fetching employee with ID: {}", id, e);
+            throw new UserException("Employee not found with ID: " + id);
+        }
     }
 
     @Override
     public EmployeeModel createUser(EmployeeModel user) {
-        log.info("Creating new employee: {}", user.getName());
-        return employeeRepository.save(user);
+        try {
+            log.info("Creating new employee: {}", user.getName());
+            return employeeRepository.save(user);
+        } catch (Exception e) {
+            log.error("Error creating employee: {}", user.getName(), e);
+            throw new UserException("Failed to create employee. Please try again.");
+        }
     }
 
     @Override
     public Optional<EmployeeModel> updateUser(Long id, EmployeeModel userDetails) {
-        log.info("Updating employee with ID: {}", id);
-        return employeeRepository.findById(id).map(user -> {
-            user.setName(userDetails.getName());
-            user.setEmail(userDetails.getEmail());
-            log.info("Updated details for employee ID: {}", id);
-            return employeeRepository.save(user);
-        });
+        try {
+            log.info("Updating employee with ID: {}", id);
+            return employeeRepository.findById(id).map(user -> {
+                user.setName(userDetails.getName());
+                user.setEmail(userDetails.getEmail());
+                log.info("Updated details for employee ID: {}", id);
+                return employeeRepository.save(user);
+            });
+        } catch (Exception e) {
+            log.error("Error updating employee with ID: {}", id, e);
+            throw new UserException("Failed to update employee. Please try again later.");
+        }
     }
 
     @Override
     public boolean deleteUser(Long id) {
-        if (employeeRepository.existsById(id)) {
-            log.warn("Deleting employee with ID: {}", id);
-            employeeRepository.deleteById(id);
-            log.info("Employee with ID: {} deleted successfully.", id);
-            return true;
+        try {
+            if (employeeRepository.existsById(id)) {
+                log.warn("Deleting employee with ID: {}", id);
+                employeeRepository.deleteById(id);
+                log.info("Employee with ID: {} deleted successfully.", id);
+                return true;
+            }
+            log.error("Attempted to delete non-existing employee with ID: {}", id);
+            return false;
+        } catch (Exception e) {
+            log.error("Error deleting employee with ID: {}", id, e);
+            throw new UserException("Failed to delete employee. Please try again.");
         }
-        log.error("Attempted to delete non-existing employee with ID: {}", id);
-        return false;
     }
 }

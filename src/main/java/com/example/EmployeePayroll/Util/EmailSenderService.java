@@ -10,7 +10,7 @@ public class EmailSenderService {
     private JavaMailSender mailSender;
     public void sendEmail(String toEmail, String subject, String body){
         SimpleMailMessage simpleMailMessage=new SimpleMailMessage();
-        simpleMailMessage.setFrom("divya.singh_cs21@gla.ac.in");
+        simpleMailMessage.setFrom("dhanraj.beniwal_cs21@gla.ac.in");
         simpleMailMessage.setTo(toEmail);
         simpleMailMessage.setText(body);
         simpleMailMessage.setSubject(subject);

@@ -33,19 +33,11 @@ public class AuthUser {
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
-            message = "Password must include uppercase, lowercase, number, and special character")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            message = "Password must include at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long")
     private String password;
 
     private String resetToken;
-
-    public String getResetToken() {
-        return resetToken;
-    }
-
-    public void setResetToken(String resetToken) {
-        this.resetToken = resetToken;
-    }
 
     public AuthUser(AuthUserDTO userDTO) {
         this.firstName = userDTO.getFirstName();

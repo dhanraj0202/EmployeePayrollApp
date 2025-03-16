@@ -18,7 +18,7 @@ public class EmployeeModel {
     private Long id;
 
     @NotBlank(message = "Name is required")
-    @Pattern(regexp = "^[A-Z][a-zA-Z]*( [A-Z][a-zA-Z]*)*$", message = "Name should start with a capital letter and contain only letters and spaces")
+    @Pattern(regexp = "^[A-Z][a-zA-Z]*$", message = "Name should start with a capital letter and contain only letters")
     private String name;
 
     @NotBlank(message = "Email is required")
