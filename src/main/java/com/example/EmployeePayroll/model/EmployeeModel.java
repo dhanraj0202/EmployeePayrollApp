@@ -7,11 +7,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;  // Add this import
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeeModel {
+public class EmployeeModel implements Serializable {  // Implement Serializable
+
+    private static final long serialVersionUID = 1L;  // Recommended for backward compatibility
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

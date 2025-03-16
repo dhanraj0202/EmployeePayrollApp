@@ -6,6 +6,7 @@ import com.example.EmployeePayroll.model.EmployeeModel;
 import com.example.EmployeePayroll.Exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,12 +14,14 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@CacheConfig(cacheNames = "employees") // Defines default cache name
 public class EmployeeService implements IemployeeService {
 
     @Autowired
     private employeeRepo employeeRepository;
 
     @Override
+    @Cacheable  // Cache the list of employees
     public List<EmployeeModel> getAllUsers() {
         try {
             log.info("Fetching all employees from the database.");
@@ -30,6 +33,7 @@ public class EmployeeService implements IemployeeService {
     }
 
     @Override
+    @Cacheable(key = "#id")  // Cache specific employee data by ID
     public Optional<EmployeeModel> getUserById(Long id) {
         try {
             log.info("Fetching employee with ID: {}", id);
@@ -41,6 +45,7 @@ public class EmployeeService implements IemployeeService {
     }
 
     @Override
+    @CachePut(key = "#user.id")  // Update cache when a new employee is created
     public EmployeeModel createUser(EmployeeModel user) {
         try {
             log.info("Creating new employee: {}", user.getName());
@@ -52,6 +57,7 @@ public class EmployeeService implements IemployeeService {
     }
 
     @Override
+    @CachePut(key = "#id")  // Update cache when an employee is updated
     public Optional<EmployeeModel> updateUser(Long id, EmployeeModel userDetails) {
         try {
             log.info("Updating employee with ID: {}", id);
@@ -68,6 +74,7 @@ public class EmployeeService implements IemployeeService {
     }
 
     @Override
+    @CacheEvict(key = "#id")  // Remove from cache when an employee is deleted
     public boolean deleteUser(Long id) {
         try {
             if (employeeRepository.existsById(id)) {

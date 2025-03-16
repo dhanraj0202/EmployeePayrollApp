@@ -10,6 +10,7 @@ import com.example.EmployeePayroll.Util.jwttoken;
 import com.example.EmployeePayroll.model.AuthUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@CacheConfig(cacheNames = "authUsers") // Default cache name
 public class AuthenticationService implements IAuthenticationService {
 
     @Autowired
@@ -31,6 +33,7 @@ public class AuthenticationService implements IAuthenticationService {
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
+    @CachePut(key = "#userDTO.email")  // Cache new user upon registration
     public AuthUser register(AuthUserDTO userDTO) throws Exception {
         try {
             log.info("Starting registration process for user: {}", userDTO.getEmail());
@@ -58,6 +61,7 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
+    @Cacheable(key = "#loginDTO.email")  // Cache login details
     public String login(LoginDTO loginDTO) {
         try {
             log.info("Attempting login for user: {}", loginDTO.getEmail());
@@ -84,6 +88,7 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
+    @CacheEvict(key = "#email")  // Clear cache after password update
     public String forgotPassword(String email, String newPassword) {
         try {
             log.info("Processing forgot password request for user: {}", email);
@@ -109,6 +114,7 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
+    @CacheEvict(key = "#email")  // Clear cache when password is reset
     public String resetPassword(String email, String currentPassword, String newPassword) {
         try {
             log.info("Processing reset password request for user: {}", email);
